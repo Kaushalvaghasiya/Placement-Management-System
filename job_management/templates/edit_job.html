@@ -1,0 +1,16 @@
+<!-- edit_job.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Job Listing</title>
+</head>
+<body>
+    <h1>Edit Job Listing</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>

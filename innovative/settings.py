@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'user_management',
+    'job_management',
 ]
 
 MIDDLEWARE = [
@@ -53,6 +54,8 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'innovative.urls'
 
 AUTH_USER_MODEL = 'user_management.CustomUser'
+
+AUTHENTICATION_BACKENDS = ['user_management.custom_auth.CustomAuthBackend']
 
 TEMPLATES = [
     {

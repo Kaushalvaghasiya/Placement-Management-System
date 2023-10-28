@@ -1,0 +1,21 @@
+<!-- employer_list.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employer List</title>
+</head>
+<body>
+    <h1>Employer List</h1>
+    <ul>
+        {% for employer in employers %}
+            <li>
+                <h3>{{ employer.company_name }}</h3>
+                <p>Industry: {{ employer.industry }}</p>
+                <p>Location: {{ employer.location }}</p>
+                <p>Description: {{ employer.description }}</p>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

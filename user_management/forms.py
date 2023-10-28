@@ -6,7 +6,7 @@ from .models import CustomUser
 class StudentSignUpForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password')
+        fields = ('full_name','username', 'email', 'password')
         widgets = {
             'password': forms.PasswordInput(),
         }
@@ -21,7 +21,7 @@ class StudentSignUpForm(forms.ModelForm):
 class HeadSignUpForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password')
+        fields = ('full_name','username', 'email', 'password')
         widgets = {
             'password': forms.PasswordInput(),
         }
@@ -36,7 +36,7 @@ class HeadSignUpForm(forms.ModelForm):
 class EmployerSignUpForm(forms.ModelForm):
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password')
+        fields = ('full_name','username', 'email', 'password')
         widgets = {
             'password': forms.PasswordInput(),
         }

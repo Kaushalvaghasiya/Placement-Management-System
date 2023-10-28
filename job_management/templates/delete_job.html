@@ -1,0 +1,17 @@
+<!-- delete_job.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Job Listing</title>
+</head>
+<body>
+    <h1>Delete Job Listing</h1>
+    <p>Are you sure you want to delete the job "{{ job.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit">Confirm Deletion</button>
+    </form>
+    <a href="{% url 'job_list' %}">Cancel</a>
+</body>
+</html>
