@@ -1,0 +1,30 @@
+/* Custom CSS for styling form controls */
+.form-signin {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 15px;
+    background: #f7f7f7;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-signin input[type="text"],
+.form-signin input[type="password"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.form-signin button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.form-signin button[type="submit"]:hover {
+    background-color: #0056b3;
+}

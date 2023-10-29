@@ -2,9 +2,11 @@
 
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
-from .forms import StudentSignUpForm, HeadSignUpForm
+from .forms import StudentSignUpForm, HeadSignUpForm, EmployerSignUpForm, StudentUpdateProfileForm, EmployerUpdateProfileForm
 from django.contrib.auth.decorators import login_required
 from .models import StudentProfile, EmployerProfile, HeadProfile
+from django.conf import settings
+from django.core.files.storage import FileSystemStorage
 
 
 def student_signup(request):
@@ -37,7 +39,7 @@ def head_signup(request):
 
 def employer_signup(request):
     if request.method == 'POST':
-        form = HeadSignUpForm(request.POST)
+        form = EmployerSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
             full_name = user.full_name
@@ -101,3 +103,54 @@ def employer_dashboard(request):
 def user_logout(request):
     logout(request)
     return redirect('student_login')
+
+def student_update_profile(request):
+    if request.method == 'POST':
+        form = StudentUpdateProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            resume = form.cleaned_data['resume']
+            fullname = form.cleaned_data['full_name']
+            dob = form.cleaned_data['date_of_birth']
+            cno = form.cleaned_data['contact_number']
+            address = form.cleaned_data['address']
+            filename = f'student_{request.user.id}_resume.pdf'
+            storage = FileSystemStorage(location=settings.MEDIA_ROOT / 'resumes')
+            storage.save(filename, resume)
+            obj = StudentProfile.objects.get(user_id=request.user)
+            obj.full_name=fullname
+            obj.date_of_birth=dob
+            obj.contact_number=cno
+            obj.address=address
+            obj.resume=filename
+            obj.save()
+            return redirect('student_profile')
+    else:
+        form = StudentUpdateProfileForm(instance=request.user)
+    return render(request, 'student_profile_update.html', {'form': form})
+
+def student_profile(request):
+    return render(request, 'student_profile.html')
+
+def employer_update_profile(request):
+    if request.method == 'POST':
+        form = EmployerUpdateProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            fullname = form.cleaned_data['company_name']
+            industry = form.cleaned_data['industry']
+            location = form.cleaned_data['location']
+            description = form.cleaned_data['description']
+            obj = EmployerProfile.objects.get(user_id=request.user)
+            obj.company_name=fullname
+            obj.industry=industry
+            obj.location=location
+            obj.description=description
+            obj.save()
+            return redirect('employer_profile')
+    else:
+        form = EmployerUpdateProfileForm(instance=request.user)
+    return render(request, 'employer_profile_update.html', {'form': form})
+
+def employer_profile(request):
+    return render(request, 'employer_profile.html')

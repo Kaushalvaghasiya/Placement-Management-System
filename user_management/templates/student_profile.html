@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Profile</title>
+</head>
+<body>
+    <h1>Student Profile</h1>
+    <p><strong>Name:</strong> {{ user.full_name }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+    <!-- Add more fields as needed -->
+    <a href="{% url 'student_profile_update' %}">Update Profile</a>
+</body>
+</html>

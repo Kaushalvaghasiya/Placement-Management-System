@@ -1,7 +1,8 @@
 # forms.py
 
 from django import forms
-from .models import CustomUser
+from django.views.generic import UpdateView
+from .models import CustomUser, StudentProfile, EmployerProfile
 
 class StudentSignUpForm(forms.ModelForm):
     class Meta:
@@ -47,3 +48,13 @@ class EmployerSignUpForm(forms.ModelForm):
         if commit:
             user.save()
         return user
+    
+class StudentUpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = StudentProfile
+        exclude = ['user']
+
+class EmployerUpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = EmployerProfile
+        exclude = ['user']

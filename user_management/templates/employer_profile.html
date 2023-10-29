@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employer Profile</title>
+</head>
+<body>
+    <h1>Employer Profile</h1>
+    <p><strong>Name:</strong> {{ user.email }}</p>
+    <!-- Add more fields as needed -->
+    <a href="{% url 'employer_profile_update' %}">Update Profile</a>
+</body>
+</html>

@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'user_management',
     'job_management',
+    'notifications',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,14 @@ ROOT_URLCONF = 'innovative.urls'
 AUTH_USER_MODEL = 'user_management.CustomUser'
 
 AUTHENTICATION_BACKENDS = ['user_management.custom_auth.CustomAuthBackend']
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+MEDIA_URL = '/media/'
+
+STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 TEMPLATES = [
     {

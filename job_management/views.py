@@ -6,6 +6,7 @@ from .models import Job, Application
 from .forms import EmployerForm, JobForm, ApplicationForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from notifications.views import send_notification_to_all_students
 
 def employer_list(request):
     employers = EmployerProfile.objects.all()
@@ -25,6 +26,10 @@ def create_job(request):
         form = JobForm(request.POST)
         if form.is_valid():
             form.save()
+            sender = form.cleaned_data['employer']
+            notification_type = "New Job Listing"
+            message = "A new job listing has been posted. Check it out!"
+            send_notification_to_all_students(sender, notification_type, message)
             return redirect('job_list')
     else:
         form = JobForm()
@@ -54,8 +59,9 @@ def delete_job(request, job_id):
 def apply_job(request, job_id):
     job = Job.objects.get(pk=job_id)
     if request.method == 'POST':
-        form = ApplicationForm(request.POST, request.FILES)
+        form = ApplicationForm(request.POST)
         if form.is_valid():
+            print("HI")
             application = form.save(commit=False)
             application.job = job
             application.student = request.user
@@ -65,16 +71,19 @@ def apply_job(request, job_id):
         form = ApplicationForm()
     return render(request, 'apply_job.html', {'form': form, 'job': job})
 
+@login_required(login_url='employer_login')
 def employer_review_applications(request):
     applications = Application.objects.filter(job__employer=request.user)
     return render(request, 'employer_review_applications.html', {'applications': applications})
 
+@login_required(login_url='employer_login')
 def shortlist_candidate(request, application_id):
     application = Application.objects.get(pk=application_id)
     application.is_shortlisted = True
     application.save()
     return redirect('employer_review_applications')
 
+@login_required(login_url='employer_login')
 def send_interview_invitation(request, application_id):
     application = Application.objects.get(pk=application_id)
     application.interview_date = datetime.now() # Set the interview date
