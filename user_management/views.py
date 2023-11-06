@@ -8,13 +8,20 @@ from .models import StudentProfile, EmployerProfile, HeadProfile
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from job_management.models import Job
-
+from django.core.mail import send_mail
 
 def student_signup(request):
     if request.method == 'POST':
         form = StudentSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Send a welcome email to the user
+            subject = 'Welcome to Our Website'
+            message = 'Thank you for registering!'
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [user.email]
+            # Send the email
+            send_mail(subject, message, from_email, recipient_list)
             full_name = user.full_name
             profile = StudentProfile(user=user,full_name=full_name)
             profile.save()
@@ -177,4 +184,4 @@ def job_listing_page(request):
 @login_required(login_url='head_login')
 def students_list(request):
     students = StudentProfile.objects.all()
-    return render(request, 'student_list.html', {'students': students})
+    return render(request, 'head_student_list.html', {'students': students})

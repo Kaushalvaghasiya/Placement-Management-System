@@ -16,7 +16,6 @@ class Job(models.Model):
 class Application(models.Model):
     job = models.ForeignKey(Job, on_delete=models.CASCADE)
     student = models.ForeignKey(StudentProfile, on_delete=models.CASCADE, default=None)
-    resume = models.FileField(upload_to='resumes/')
     applied_date = models.DateTimeField(default=datetime.now)
     is_shortlisted = models.BooleanField(default=False)
     interview_date = models.DateTimeField(null=True, blank=True)

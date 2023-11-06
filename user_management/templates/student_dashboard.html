@@ -7,6 +7,8 @@
     <!-- Add Font Awesome CSS link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <!-- Include additional CSS files for styling -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -27,12 +29,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'student_job_list' %}">
+                    <a class="nav-link" href="{% url 'student_application_list' %}">
                         <i class="fas fa-briefcase"></i> Job Applications
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{% url 'student_job_list' %}">
                         <i class="fas fa-lightbulb"></i> Job Recommendations
                     </a>
                 </li>
@@ -47,9 +49,9 @@
         </div>
     </nav>
 
-    <div class="container mt-4">
-        <h1>Welcome to the Student Dashboard, {{ user.username }}</h1>
-        <!-- Add student-specific content here, e.g., job listings, application status, etc. -->
+    <div class="content">
+        {% block content %}
+        {% endblock %}
     </div>
 
     <!-- Include scripts for Bootstrap and any other JavaScript functionality -->

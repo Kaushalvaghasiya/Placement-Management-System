@@ -1,9 +1,9 @@
 # views.py
 
 from django.shortcuts import render, redirect
-from user_management.models import EmployerProfile
+from user_management.models import EmployerProfile, StudentProfile
 from .models import Job, Application
-from .forms import EmployerForm, JobForm, ApplicationForm
+from .forms import EmployerForm, JobForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from notifications.views import send_notification_to_all_students
@@ -74,17 +74,17 @@ def delete_job(request, job_id):
 def apply_job(request, job_id):
     job = Job.objects.get(pk=job_id)
     if request.method == 'POST':
-        form = ApplicationForm(request.POST)
-        if form.is_valid():
-            print("HI")
-            application = form.save(commit=False)
-            application.job = job
-            application.student = request.user
-            application.save()
-            return redirect('job_list')
-    else:
-        form = ApplicationForm()
-    return render(request, 'apply_job.html', {'form': form, 'job': job})
+        student = StudentProfile.objects.get(user_id=request.user)
+        application = Application(job=job, student=student)
+        application.save()
+        return redirect('student_dashboard')
+    return render(request, 'apply_job.html')
+
+@login_required(login_url='student_login')
+def student_application_list(request):
+    user = StudentProfile.objects.get(user_id=request.user)
+    applications = Application.objects.filter(student=user)
+    return render(request, 'student_application_list.html', {'applications': applications})
 
 @login_required(login_url='employer_login')
 def employer_review_applications(request):
@@ -101,6 +101,6 @@ def shortlist_candidate(request, application_id):
 @login_required(login_url='employer_login')
 def send_interview_invitation(request, application_id):
     application = Application.objects.get(pk=application_id)
-    application.interview_date = datetime.now() # Set the interview date
+    application.interview_date = datetime.now()
     application.save()
     return redirect('employer_review_applications')

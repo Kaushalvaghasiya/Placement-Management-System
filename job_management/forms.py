@@ -13,8 +13,3 @@ class JobForm(forms.ModelForm):
     class Meta:
         model = Job
         fields = '__all__'
-
-class ApplicationForm(forms.ModelForm):
-    class Meta:
-        model = Application
-        fields = '__all__'
