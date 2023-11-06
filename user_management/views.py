@@ -2,6 +2,8 @@
 
 from django.contrib.auth import login, logout, authenticate
 from django.shortcuts import render, redirect
+
+from notifications.models import Notification
 from .forms import StudentSignUpForm, HeadSignUpForm, EmployerSignUpForm, StudentUpdateProfileForm, EmployerUpdateProfileForm
 from django.contrib.auth.decorators import login_required
 from .models import StudentProfile, EmployerProfile, HeadProfile
@@ -29,13 +31,22 @@ def student_signup(request):
             return redirect('student_dashboard')
     else:
         form = StudentSignUpForm()
-    return render(request, 'student_signup.html', {'form': form})
+        user = StudentProfile.objects.get(user=request.user)
+        notifications = Notification.objects.filter(recipient=user, is_read=False).order_by('-created_at')
+    return render(request, 'student_signup.html', {'form': form, 'notifications' : notifications})
 
 def head_signup(request):
     if request.method == 'POST':
         form = HeadSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Send a welcome email to the user
+            subject = 'Welcome to Our Website'
+            message = 'Thank you for registering!'
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [user.email]
+            # Send the email
+            send_mail(subject, message, from_email, recipient_list)
             full_name = user.full_name
             profile = HeadProfile(user=user,full_name=full_name)
             profile.save()
@@ -43,13 +54,22 @@ def head_signup(request):
             return redirect('head_dashboard')
     else:
         form = HeadSignUpForm()
-    return render(request, 'head_signup.html', {'form': form})
+        user = HeadProfile.objects.get(user=request.user)
+        notifications = Notification.objects.filter(recipient=user, is_read=False).order_by('-created_at')
+    return render(request, 'head_signup.html', {'form': form, 'notifications' : notifications})
 
 def employer_signup(request):
     if request.method == 'POST':
         form = EmployerSignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
+            # Send a welcome email to the user
+            subject = 'Welcome to Our Website'
+            message = 'Thank you for registering!'
+            from_email = settings.EMAIL_HOST_USER
+            recipient_list = [user.email]
+            # Send the email
+            send_mail(subject, message, from_email, recipient_list)
             full_name = user.full_name
             profile = EmployerProfile(user=user,company_name=full_name)
             profile.save()
@@ -57,7 +77,9 @@ def employer_signup(request):
             return redirect('employer_dashboard')
     else:
         form = HeadSignUpForm()
-    return render(request, 'employer_signup.html', {'form': form})
+        user = EmployerProfile.objects.get(user=request.user)
+        notifications = Notification.objects.filter(recipient=user, is_read=False).order_by('-created_at')
+    return render(request, 'employer_signup.html', {'form': form, 'notifications' : notifications})
 
 def student_login(request):
     if request.method == 'POST':

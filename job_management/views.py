@@ -39,13 +39,15 @@ def create_job(request):
     if request.method == 'POST':
         form = JobForm(request.POST)
         if form.is_valid():
-            form.employer_id=request.user
-            form.save()
+            job = form.save(commit=False)
+            user = EmployerProfile.objects.get(user=request.user)
+            job.employer = user
+            job.save()
             sender = request.user
             notification_type = "New Job Listing"
             message = "A new job listing has been posted. Check it out!"
             send_notification_to_all_students(sender, notification_type, message)
-            return redirect('job_list')
+            return redirect('job_listing_page')
     else:
         form = JobForm()
     return render(request, 'create_job.html', {'form': form})
@@ -57,7 +59,7 @@ def edit_job(request, job_id):
         form = JobForm(request.POST, instance=job)
         if form.is_valid():
             form.save()
-            return redirect('job_list')
+            return redirect('job_listing_page')
     else:
         form = JobForm(instance=job)
     return render(request, 'edit_job.html', {'form': form, 'job': job})
@@ -67,7 +69,7 @@ def delete_job(request, job_id):
     job = Job.objects.get(pk=job_id)
     if request.method == 'POST':
         job.delete()
-        return redirect('job_list')
+        return redirect('job_listing_page')
     return render(request, 'delete_job.html', {'job': job})
 
 @login_required(login_url='student_login')
@@ -77,7 +79,7 @@ def apply_job(request, job_id):
         student = StudentProfile.objects.get(user_id=request.user)
         application = Application(job=job, student=student)
         application.save()
-        return redirect('student_dashboard')
+        return redirect('student_job_list')
     return render(request, 'apply_job.html')
 
 @login_required(login_url='student_login')

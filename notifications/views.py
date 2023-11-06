@@ -8,7 +8,6 @@ def send_notification_to_all_students(sender, notification_type, message):
     student_users = CustomUser.objects.filter(user_type="student")
 
     for student_user in student_users:
-        # sender = CustomUser.objects.get(username='1')  # Define the sender
         recipient = student_user
         send_notification(sender, recipient, notification_type, message)
 

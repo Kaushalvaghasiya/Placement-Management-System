@@ -8,7 +8,7 @@
     <ul>
         {% for notification in notifications %}
             <li>
-                <strong>{{ notification.sender.username }}</strong> sent you a notification:<br>
+                <strong>{{ notification.sender.username }} : </strong>
                 {{ notification.message }}<br>
                 <small>{{ notification.created_at }}</small>
                 {% if not notification.is_read %}

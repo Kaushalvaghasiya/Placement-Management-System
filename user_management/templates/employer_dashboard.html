@@ -9,12 +9,57 @@
     <!-- Include additional CSS files for styling -->
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
+    <style>
+        /* Style for the collapsible sidebar */
+        .sidebar {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            right: 0; /* Position it on the right side */
+            background-color: #f8f9fa;
+            overflow-x: hidden;
+            transition: 0.3s;
+            padding-top: 60px;
+        }
+
+        .sidebar a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 18px;
+            color: #333;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .sidebar a:hover {
+            color: #007bff;
+        }
+
+        .sidebar .closebtn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+        }
+    </style>
+    <script>
+        // JavaScript function to open and close the sidebar
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
+
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+    </script>
+    </style>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#">Employer Dashboard</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+            <span class="fas fa-bell"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
@@ -28,18 +73,12 @@
                         <i class="fas fa-briefcase"></i> Job Listing
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-lightbulb"></i> Shorlist
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">
-                        <i class="fas fa-lightbulb"></i> Interview
-                    </a>
-                </li>
             </ul>
             <ul class="navbar-nav ml-auto"> <!-- ml-auto pushes the "Logout" link to the right -->
+                <!-- Add a button to open the sidebar -->
+                <li class="nav-item">
+                    <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776;</span>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'logout' %}">
                         <i class="fas fa-sign-out-alt"></i> Logout
@@ -48,6 +87,21 @@
             </ul>
         </div>
     </nav>
+
+    <!-- Collapsible sidebar for notifications -->
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        {% for notification in notifications %}
+            <li>
+                <strong>{{ notification.sender.username }}</strong> sent you a notification:<br>
+                {{ notification.message }}<br>
+                <small>{{ notification.created_at }}</small>
+                {% if not notification.is_read %}
+                    <a href="{% url 'mark_as_read' notification.id %}">Mark as Read</a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </div>
 
     <div class="content">
         {% block content %}

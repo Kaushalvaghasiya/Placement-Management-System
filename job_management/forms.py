@@ -12,4 +12,4 @@ class EmployerForm(forms.ModelForm):
 class JobForm(forms.ModelForm):
     class Meta:
         model = Job
-        fields = '__all__'
+        exclude = ['employer']
