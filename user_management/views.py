@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from .models import StudentProfile, EmployerProfile, HeadProfile
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from job_management.models import Job
 
 
 def student_signup(request):
@@ -104,6 +105,7 @@ def user_logout(request):
     logout(request)
     return redirect('student_login')
 
+@login_required(login_url='student_login')
 def student_update_profile(request):
     if request.method == 'POST':
         form = StudentUpdateProfileForm(request.POST, request.FILES, instance=request.user)
@@ -126,12 +128,16 @@ def student_update_profile(request):
             obj.save()
             return redirect('student_profile')
     else:
-        form = StudentUpdateProfileForm(instance=request.user)
+        user = StudentProfile.objects.get(user_id=request.user)
+        form = StudentUpdateProfileForm(instance=user)
     return render(request, 'student_profile_update.html', {'form': form})
 
+@login_required(login_url='student_login')
 def student_profile(request):
-    return render(request, 'student_profile.html')
+    profile = StudentProfile.objects.get(user_id=request.user)
+    return render(request, 'student_profile.html', {'profile': profile})
 
+@login_required(login_url='employer_login')
 def employer_update_profile(request):
     if request.method == 'POST':
         form = EmployerUpdateProfileForm(request.POST, request.FILES, instance=request.user)
@@ -149,8 +155,26 @@ def employer_update_profile(request):
             obj.save()
             return redirect('employer_profile')
     else:
-        form = EmployerUpdateProfileForm(instance=request.user)
+        user = EmployerProfile.objects.get(user_id=request.user)
+        form = EmployerUpdateProfileForm(instance=user)
     return render(request, 'employer_profile_update.html', {'form': form})
 
+@login_required(login_url='employer_login')
 def employer_profile(request):
-    return render(request, 'employer_profile.html')
+    profile = EmployerProfile.objects.get(user_id=request.user)
+    return render(request, 'employer_profile.html', {'profile': profile})
+
+@login_required(login_url='employer_login')
+def job_listing_page(request):
+    employer = EmployerProfile.objects.get(user_id=request.user)
+    job_listings = Job.objects.filter(employer=employer)
+    
+    context = {
+        'job_listings': job_listings
+    }
+    return render(request, 'employer_job_listings.html', context)
+
+@login_required(login_url='head_login')
+def students_list(request):
+    students = StudentProfile.objects.all()
+    return render(request, 'student_list.html', {'students': students})

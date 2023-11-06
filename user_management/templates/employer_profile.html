@@ -2,11 +2,39 @@
 <html>
 <head>
     <title>Employer Profile</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Employer Profile</h1>
-    <p><strong>Name:</strong> {{ user.email }}</p>
-    <!-- Add more fields as needed -->
-    <a href="{% url 'employer_profile_update' %}">Update Profile</a>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Employer Profile</h1>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9">{{ profile.company_name }}</dd>
+                    
+                    <dt class="col-sm-3">Industry:</dt>
+                    <dd class="col-sm-9">{{ profile.industry }}</dd>
+                    
+                    <dt class="col-sm-3">Location:</dt>
+                    <dd class="col-sm-9">{{ profile.location }}</dd>
+                    
+                    <dt class="col-sm-3">Description:</dt>
+                    <dd class="col-sm-9">{{ profile.description }}</dd>
+                    <!-- Add more fields as needed -->
+
+                    <dd class="col-sm-6 mt-4">
+                        <a href="{% url 'employer_profile_update' %}" class="btn btn-primary">Update Profile</a>
+                    </dd>
+                    <dd class="col-sm-6 mt-4">
+                        <a href="{% url 'employer_dashboard' %}" class="btn btn-primary">Dashboard</a>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

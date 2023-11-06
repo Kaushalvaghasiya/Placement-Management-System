@@ -7,6 +7,7 @@ from django.conf import settings
 urlpatterns = [
     path('', views.student_login, name='student_login'),
     path('logout/', views.user_logout, name='logout'),
+    path('students/', views.students_list, name='students_list'),
     path('student/signup/', views.student_signup, name='student_signup'),
     path('head/signup/', views.head_signup, name='head_signup'),
     path('employer/signup/', views.employer_signup, name='employer_signup'),
@@ -19,4 +20,5 @@ urlpatterns = [
     path('student/profile/update/', views.student_update_profile, name='student_profile_update'),
     path('employer/profile/', views.employer_profile, name='employer_profile'),
     path('employer/profile/update/', views.employer_update_profile, name='employer_profile_update'),
+    path('job-listings/', views.job_listing_page, name='job_listing_page'),
 ]

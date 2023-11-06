@@ -8,14 +8,28 @@ from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from notifications.views import send_notification_to_all_students
 
-def employer_list(request):
+@login_required(login_url='student_login')
+def student_employer_list(request):
     employers = EmployerProfile.objects.all()
-    return render(request, 'employer_list.html', {'employers': employers})
+    return render(request, 'student_employer_list.html', {'employers': employers})
 
-def job_list(request):
+@login_required(login_url='head_login')
+def head_employer_list(request):
+    employers = EmployerProfile.objects.all()
+    return render(request, 'head_employer_list.html', {'employers': employers})
+
+
+@login_required(login_url='student_login')
+def student_job_list(request):
     jobs = Job.objects.all()
-    return render(request, 'job_list.html', {'jobs': jobs})
+    return render(request, 'student_job_list.html', {'jobs': jobs})
 
+@login_required(login_url='head_login')
+def head_job_list(request):
+    jobs = Job.objects.all()
+    return render(request, 'head_job_list.html', {'jobs': jobs})
+
+@login_required
 def job_detail(request, job_id):
     job = Job.objects.get(pk=job_id)
     return render(request, 'job_detail.html', {'job': job})
@@ -25,8 +39,9 @@ def create_job(request):
     if request.method == 'POST':
         form = JobForm(request.POST)
         if form.is_valid():
+            form.employer_id=request.user
             form.save()
-            sender = form.cleaned_data['employer']
+            sender = request.user
             notification_type = "New Job Listing"
             message = "A new job listing has been posted. Check it out!"
             send_notification_to_all_students(sender, notification_type, message)

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Employer's Job Listings</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-4">Employer's Job Listings</h1>
+        <div class="mt-4">
+            <ul class="list-group">
+                {% for job in job_listings %}
+                    <li class="list-group-item">
+                        <h3>{{ job.title }}</h3>
+                        <p>{{ job.description }}</p>
+                        <!-- Add more job details as needed -->
+                        <a href="{% url 'job_detail' job.id %}" class="btn btn-primary btn-sm mr-2">View Details</a>
+                        <a href="{% url 'edit_job' job.id %}" class="btn btn-warning btn-sm mr-2">Edit</a>
+                        <a href="{% url 'delete_job' job.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    </li>
+                {% empty %}
+                    <p class="mt-4">No job listings available.</p>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="mt-4">
+            <a href="{% url 'create_job' %}" class="btn btn-success">Create New Job</a>
+            <a href="{% url 'employer_dashboard' %}" class="btn btn-secondary">Back to Dashboard</a>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>

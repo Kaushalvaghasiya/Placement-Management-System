@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Student Profile</title>
+    <title>Employer Profile</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Student Profile</h1>
-    <p><strong>Name:</strong> {{ user.full_name }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <!-- Add more fields as needed -->
-    <a href="{% url 'student_profile_update' %}">Update Profile</a>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">Student Profile</h1>
+            </div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">Name:</dt>
+                    <dd class="col-sm-9">{{ profile.full_name }}</dd>
+                    
+                    <dt class="col-sm-3">Date of Birth:</dt>
+                    <dd class="col-sm-9">{{ profile.date_of_birth }}</dd>
+                    
+                    <dt class="col-sm-3">Contact:</dt>
+                    <dd class="col-sm-9">{{ profile.contact_number }}</dd>
+                    
+                    <dt class="col-sm-3">Address:</dt>
+                    <dd class="col-sm-9">{{ profile.address }}</dd>
+                    <!-- Add more fields as needed -->
+
+                    <dd class="col-sm-6 mt-4">
+                        <a href="{% url 'student_profile_update' %}" class="btn btn-primary">Update Profile</a>
+                    </dd>
+                    <dd class="col-sm-6 mt-4">
+                        <a href="{% url 'student_dashboard' %}" class="btn btn-primary">Dashboard</a>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

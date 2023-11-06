@@ -4,8 +4,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('employers/', views.employer_list, name='employer_list'),
-    path('jobs/', views.job_list, name='job_list'),
+    path('student/employers/', views.student_employer_list, name='student_employer_list'),
+    path('head/employers/', views.head_employer_list, name='head_employer_list'),
+    path('student/jobs/', views.student_job_list, name='student_job_list'),
+    path('head/jobs/', views.head_job_list, name='head_job_list'),
     path('jobs/create/', views.create_job, name='create_job'),
     path('jobs/<int:job_id>/', views.job_detail, name='job_detail'),
     path('jobs/<int:job_id>/edit/', views.edit_job, name='edit_job'),
