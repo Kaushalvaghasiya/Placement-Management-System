@@ -13,3 +13,7 @@ class JobForm(forms.ModelForm):
     class Meta:
         model = Job
         exclude = ['employer']
+    widgets = {
+        'interview_date': forms.DateInput(attrs={'type': 'date'}),
+        'applied_date': forms.DateInput(attrs={'type': 'date'}),
+    }

@@ -53,6 +53,9 @@ class StudentUpdateProfileForm(forms.ModelForm):
     class Meta:
         model = StudentProfile
         exclude = ['user','is_verified']
+    widgets = {
+        'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+    }
 
 class EmployerUpdateProfileForm(forms.ModelForm):
     class Meta:

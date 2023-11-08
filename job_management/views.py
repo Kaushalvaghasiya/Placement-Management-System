@@ -7,6 +7,13 @@ from .forms import EmployerForm, JobForm
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from notifications.views import send_notification_to_all_students, send_notification
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
+from reportlab.lib import colors
+from reportlab.lib.styles import getSampleStyleSheet
+from django.shortcuts import render
+from .models import Application
 
 @login_required(login_url='student_login')
 def student_employer_list(request):
@@ -121,6 +128,35 @@ def student_application_list(request):
         })
     return render(request, 'student_application_list.html', {'jobs': job_details})
 
+@login_required(login_url='employer_login')
+def generate_shortlisted_students_pdf(request,job_id):
+    applications = Application.objects.filter(job=job_id, is_shortlisted=True)
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="shortlisted_students.pdf"'
+    doc = SimpleDocTemplate(response, pagesize=letter)
+    elements = []
+    data = [['Title', 'Description', 'Applied Date', 'Interview Date']]
+
+    for application in applications:
+        job = application.job
+        data.append([job.title, job.description, application.applied_date, application.interview_date])
+
+    table = Table(data)
+    table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+        ('GRID', (0, 0), (-1, -1), 1, colors.black)
+    ]))
+
+    elements.append(Paragraph('Shortlisted Students', getSampleStyleSheet()['Heading1']))
+    elements.append(table)
+    doc.build(elements)
+    return response
+
 @login_required(login_url="head_login")
 def head_student_verify(request, student_id):
     obj = StudentProfile.objects.get(id=student_id)
@@ -137,9 +173,9 @@ def head_student_unverify(request, student_id):
 
 @login_required(login_url="head_login")
 def head_student_delete(request, student_id):
-    student = CustomUser.objects.get(user_id=student_id)
-    student.delete()
     obj = StudentProfile.objects.get(id=student_id)
+    # student = CustomUser.objects.get(id=obj.id)
+    # student.delete()
     obj.delete()
     return redirect('head_students_list')
 
@@ -159,9 +195,9 @@ def head_employer_unverify(request, employer_id):
 
 @login_required(login_url="head_login")
 def head_employer_delete(request, employer_id):
-    student = CustomUser.objects.get(user_id=employer_id)
-    student.delete()
     obj = EmployerProfile.objects.get(id=employer_id)
+    # student = CustomUser.objects.get(id=obj)
+    # student.delete()
     obj.delete()
     return redirect('head_employer_list')
 
