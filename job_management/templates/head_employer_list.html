@@ -19,7 +19,14 @@
                     <td>{{ employer.contact_email }}</td>
                     <td>{{ employer.phone_number }}</td>
                     <td>{{ employer.address }}</td>
-                    <td>verify,remove</td>
+                    <td>
+                        {% if employer.is_verified %}
+                            <a href="{% url 'head_employer_unverify' employer.id %}">Un verify</a>
+                        {% else %}
+                            <a href="{% url 'head_employer_verify' employer.id %}">Verify</a>
+                        {% endif %}
+                        <a href="{% url 'head_employer_delete' employer.id %}">Delete</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

@@ -11,6 +11,13 @@ def send_notification_to_all_students(sender, notification_type, message):
         recipient = student_user
         send_notification(sender, recipient, notification_type, message)
 
+def send_notification_to_all_heads(sender, notification_type, message):
+    head_users = CustomUser.objects.filter(user_type="head")
+
+    for head_user in head_users:
+        recipient = head_user
+        send_notification(sender, recipient, notification_type, message)
+
 def send_notification(sender, recipient, notification_type, message):
     notification = Notification(sender=sender, recipient=recipient, notification_type=notification_type, message=message)
     notification.save()

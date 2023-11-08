@@ -1,10 +1,10 @@
 {% extends 'student_dashboard.html' %}
 {% block content %}
-<form class="form-signin" method="post">
+<form class="form-signin" method="post" enctype="multipart/form-data">
     <h2 class="h3 mb-3 font-weight-normal">Student Update Profile</h2>
     {% csrf_token %}
     {{ form.as_p }}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
 </form>
 <a href="{% url 'student_profile' %}">Back to Profile</a>
 {% endblock %}

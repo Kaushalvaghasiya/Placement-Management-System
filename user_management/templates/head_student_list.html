@@ -24,12 +24,19 @@
                     <td>{{ student.address }}</td>
                     <td>
                         {% if student.resume %}
-                            <a href="{{ student.resume.url }}" target="_blank">Download Resume</a>
+                            <a href="{{ MEDIA_URL }}{{ student.resume.url }}" >Download Resume</a>
                         {% else %}
                             No Resume
                         {% endif %}
                     </td>
-                    <td>verify,remove</td>
+                    <td>
+                        {% if student.is_verified %}
+                            <a href="{% url 'head_student_unverify' student.id %}">Un verify</a>
+                        {% else %}
+                            <a href="{% url 'head_student_verify' student.id %}">Verify</a>
+                        {% endif %}
+                        <a href="{% url 'head_student_delete' student.id %}">Delete</a>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

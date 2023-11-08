@@ -11,6 +11,7 @@ from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from job_management.models import Job
 from django.core.mail import send_mail
+from notifications.views import send_notification_to_all_heads
 
 def student_signup(request):
     if request.method == 'POST':
@@ -31,9 +32,7 @@ def student_signup(request):
             return redirect('student_dashboard')
     else:
         form = StudentSignUpForm()
-        user = StudentProfile.objects.get(user=request.user)
-        notifications = Notification.objects.filter(recipient=user, is_read=False).order_by('-created_at')
-    return render(request, 'student_signup.html', {'form': form, 'notifications' : notifications})
+    return render(request, 'student_signup.html', {'form': form})
 
 def head_signup(request):
     if request.method == 'POST':
@@ -54,9 +53,7 @@ def head_signup(request):
             return redirect('head_dashboard')
     else:
         form = HeadSignUpForm()
-        user = HeadProfile.objects.get(user=request.user)
-        notifications = Notification.objects.filter(recipient=user, is_read=False).order_by('-created_at')
-    return render(request, 'head_signup.html', {'form': form, 'notifications' : notifications})
+    return render(request, 'head_signup.html', {'form': form})
 
 def employer_signup(request):
     if request.method == 'POST':
@@ -77,9 +74,7 @@ def employer_signup(request):
             return redirect('employer_dashboard')
     else:
         form = HeadSignUpForm()
-        user = EmployerProfile.objects.get(user=request.user)
-        notifications = Notification.objects.filter(recipient=user, is_read=False).order_by('-created_at')
-    return render(request, 'employer_signup.html', {'form': form, 'notifications' : notifications})
+    return render(request, 'employer_signup.html', {'form': form})
 
 def student_login(request):
     if request.method == 'POST':
@@ -119,15 +114,18 @@ def employer_login(request):
 
 @login_required(login_url='student_login')
 def student_dashboard(request):
-    return render(request, 'student_dashboard.html')
+    notifications = Notification.objects.filter(recipient=request.user, is_read=False).order_by('-created_at')
+    return render(request, 'student_dashboard.html', {'notifications' : notifications})
 
 @login_required(login_url='head_login')
 def head_dashboard(request):
-    return render(request, 'head_dashboard.html')
+    notifications = Notification.objects.filter(recipient=request.user, is_read=False).order_by('-created_at')
+    return render(request, 'head_dashboard.html', {'notifications' : notifications})
 
 @login_required(login_url='employer_login')
 def employer_dashboard(request):
-    return render(request, 'employer_dashboard.html')
+    notifications = Notification.objects.filter(recipient=request.user, is_read=False).order_by('-created_at')
+    return render(request, 'employer_dashboard.html', {'notifications' : notifications})
 
 @login_required
 def user_logout(request):
@@ -146,6 +144,15 @@ def student_update_profile(request):
             cno = form.cleaned_data['contact_number']
             address = form.cleaned_data['address']
             filename = f'student_{request.user.id}_resume.pdf'
+            spi_semester1 = form.cleaned_data['spi_semester1']
+            spi_semester2 = form.cleaned_data['spi_semester2']
+            spi_semester3 = form.cleaned_data['spi_semester3']
+            spi_semester4 = form.cleaned_data['spi_semester4']
+            spi_semester5 = form.cleaned_data['spi_semester5']
+            spi_semester6 = form.cleaned_data['spi_semester6']
+            spi_semester7 = form.cleaned_data['spi_semester7']
+            spi_semester8 = form.cleaned_data['spi_semester8']
+            cgpa = (spi_semester1 + spi_semester2 + spi_semester3 + spi_semester4 + spi_semester5 + spi_semester6 + spi_semester7 + spi_semester8)/8
             storage = FileSystemStorage(location=settings.MEDIA_ROOT / 'resumes')
             storage.save(filename, resume)
             obj = StudentProfile.objects.get(user_id=request.user)
@@ -153,8 +160,22 @@ def student_update_profile(request):
             obj.date_of_birth=dob
             obj.contact_number=cno
             obj.address=address
-            obj.resume=filename
+            obj.resume="resumes/"+filename
+            obj.spi_semester1=spi_semester1
+            obj.spi_semester2=spi_semester2
+            obj.spi_semester3=spi_semester3
+            obj.spi_semester4=spi_semester4
+            obj.spi_semester5=spi_semester5
+            obj.spi_semester6=spi_semester6
+            obj.spi_semester7=spi_semester7
+            obj.spi_semester8=spi_semester8
+            obj.cgpa=cgpa
+            obj.is_verified=False
             obj.save()
+            sender = request.user
+            notification_type = "Request Verifications"
+            message = "Details are updated please Verify!"
+            send_notification_to_all_heads(sender, notification_type, message)
             return redirect('student_profile')
     else:
         user = StudentProfile.objects.get(user_id=request.user)

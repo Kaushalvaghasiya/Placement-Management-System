@@ -2,9 +2,10 @@
 {% block content %}
     <h1>Apply for Job</h1>
     <h2>{{ job.title }}</h2>
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" class="form-signin" >
         {% csrf_token %}
         {{ job.name }}
         <button type="submit">Apply</button>
     </form>
+    <a href="{% url 'student_job_list' %}">Go Back</a>
 {% endblock %}

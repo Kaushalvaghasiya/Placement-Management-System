@@ -22,11 +22,3 @@ class Application(models.Model):
 
     def __str__(self):
         return f"Application for {self.job.title} by {self.student.username}"
-
-class Interview(models.Model):
-    application = models.ForeignKey(Application, on_delete=models.CASCADE)
-    interview_date = models.DateTimeField()
-    location = models.CharField(max_length=100)
-
-    def __str__(self):
-        return f"Interview for {self.application.student_name}"

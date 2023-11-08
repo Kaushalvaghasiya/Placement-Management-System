@@ -52,9 +52,9 @@ class EmployerSignUpForm(forms.ModelForm):
 class StudentUpdateProfileForm(forms.ModelForm):
     class Meta:
         model = StudentProfile
-        exclude = ['user']
+        exclude = ['user','is_verified']
 
 class EmployerUpdateProfileForm(forms.ModelForm):
     class Meta:
         model = EmployerProfile
-        exclude = ['user']
+        exclude = ['user','is_verified']

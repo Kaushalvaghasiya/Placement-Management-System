@@ -4,7 +4,7 @@
     <h2 class="h3 mb-3 font-weight-normal">Employer Update Profile</h2>
     {% csrf_token %}
     {{ form.as_p }}
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Sign Up</button>
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
 </form>
 <a href="{% url 'employer_profile' %}">Back to Profile</a>
 {% endblock %}

@@ -101,16 +101,22 @@
       <!-- Collapsible sidebar for notifications -->
       <div id="mySidebar" class="sidebar">
         <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-        {% for notification in notifications %}
-            <li>
-                <strong>{{ notification.sender.username }}</strong> sent you a notification:<br>
-                {{ notification.message }}<br>
-                <small>{{ notification.created_at }}</small>
-                {% if not notification.is_read %}
-                    <a href="{% url 'mark_as_read' notification.id %}">Mark as Read</a>
-                {% endif %}
-            </li>
-        {% endfor %}
+        {% if notifications %}
+            <ul>
+                {% for notification in notifications %}
+                    <li>
+                        <strong>{{ notification.sender.username }}</strong> sent you a notification:<br>
+                        {{ notification.message }}<br>
+                        <small>{{ notification.created_at }}</small>
+                        {% if not notification.is_read %}
+                            <a href="{% url 'mark_as_read' notification.id %}">Mark as Read</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No notifications to display.</p>
+        {% endif %}
     </div>
 
     <div class="content">
