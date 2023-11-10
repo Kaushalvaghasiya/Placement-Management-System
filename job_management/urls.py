@@ -22,6 +22,4 @@ urlpatterns = [
     path('jobs/applications/', views.student_application_list, name='student_application_list'),
     path('application/shortlist/<int:application_id>/', views.shortlist_student, name='shortlist_student'),
     path('application/generate_shortlisted_students_pdf/<int:job_id>', views.generate_shortlisted_students_pdf, name='generate_shortlisted_students_pdf'),
-    path('application/reject/<int:application_id>/', views.reject_student, name='reject_student'),
-    path('send_invitation/<int:application_id>/', views.send_interview_invitation, name='send_interview_invitation'),
 ]

@@ -31,8 +31,11 @@
                         <td>{{ student.contact_number }}</td>
                         <td>{{ student.address }}</td>
                         <td>
-                            <a href="{% url 'shortlist_student' student.id %}">Shortlist</a>
-                            <a href="{% url 'reject_student' student.id %}">Reject</a>
+                            {% if student.is_shortlist %}
+                                <p>Shortlisted</p>
+                            {% else %}
+                                <p>Shortlist</p>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}

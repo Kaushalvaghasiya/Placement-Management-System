@@ -45,12 +45,13 @@ def job_detail(request, job_id):
         applied_date = application.applied_date
         student = application.student
         student_details.append({
-            'id': student.id,
+            'id': application.id,
             'full_name': student.full_name,
             'email': student.user.email,
             'contact_number': student.contact_number,
             'CGPA': student.cgpa,
             'resume': student.resume,
+            'is_shorlist': application.is_shortlisted,
         })
     return render(request, 'job_detail.html', {'job': job, 'students': student_details})
 
@@ -104,9 +105,10 @@ def apply_job(request, job_id):
         student = StudentProfile.objects.get(user_id=request.user)
         if student.is_verified:
             try:
-                application = Application.objects.get(job=job)
+                application = Application.objects.get(job=job, student=student)
             except:
                 application = Application(job=job, student=student)
+                application.is_shortlisted=False
                 application.save()
         return redirect('student_job_list')
     return render(request, 'apply_job.html')
@@ -135,11 +137,11 @@ def generate_shortlisted_students_pdf(request,job_id):
     response['Content-Disposition'] = 'attachment; filename="shortlisted_students.pdf"'
     doc = SimpleDocTemplate(response, pagesize=letter)
     elements = []
-    data = [['Title', 'Description', 'Applied Date', 'Interview Date']]
+    data = [['Title', 'Description', 'Applied Date', 'Shortlist']]
 
     for application in applications:
         job = application.job
-        data.append([job.title, job.description, application.applied_date, application.interview_date])
+        data.append([job.title, job.description, application.applied_date, application.is_shortlisted])
 
     table = Table(data)
     table.setStyle(TableStyle([
@@ -207,18 +209,5 @@ def shortlist_student(request, application_id):
     application = Application.objects.get(pk=application_id)
     application.is_shortlisted = True
     application.save()
-    return redirect('employer_review_applications')
+    return redirect('job_listing_page')
 
-@login_required(login_url='employer_login')
-def reject_student(request, application_id):
-    application = Application.objects.get(pk=application_id)
-    application.is_shortlisted = False
-    application.save()
-    return redirect('employer_review_applications')
-
-@login_required(login_url='employer_login')
-def send_interview_invitation(request, application_id):
-    application = Application.objects.get(pk=application_id)
-    application.interview_date = datetime.now()
-    application.save()
-    return redirect('employer_review_applications')
